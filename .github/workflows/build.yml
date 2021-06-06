@@ -1,0 +1,76 @@
+name: Build
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: [windows-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Windows Build
+        run: .\ci-build.cmd
+        
+      - uses: actions/upload-artifact@v2.2.3
+        with:
+          name: libs
+          path: | 
+            build\x64\Release\cimgui.win-x64.dll
+            build\x86\Release\cimgui.win-x86.dll
+            build\x64\Release\cimplot.win-x64.dll
+            build\x64\Release\cimnodes.win-x64.dll
+            build\x64\Release\cimguizmo.win-x64.dll
+            build\x86\Release\cimplot.win-x86.dll
+            build\x86\Release\cimnodes.win-x86.dll
+            build\x86\Release\cimguizmo.win-x86.dll
+            
+            
+            
+  build-linux:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Linux Build
+        run: ./ci-build.sh
+        
+      - uses: actions/upload-artifact@v2.2.3
+        with:
+          name: libs
+          path: |
+            build/Release/cimgui.so
+            build/Release/cimplot.so
+            build/Release/cimnodes.so
+            build/Release/cimguizmo.so
+            
+  build-osx:
+    runs-on: [macos-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: Osx Build
+        run: ./ci-build.sh
+        
+      - uses: actions/upload-artifact@v2.2.3
+        with:
+          name: libs
+          path: |
+            build/Release/cimgui.dylib
+            build/Release/cimplot.dylib
+            build/Release/cimnodes.dylib
+            build/Release/cimguizmo.dylib
+            
